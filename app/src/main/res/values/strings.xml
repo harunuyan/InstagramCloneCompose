@@ -6,6 +6,7 @@
     <string name="signup">Signup</string>
     <string name="signup_button">SIGN UP</string>
     <string name="already_user">Already a user? Go to login -></string>
+    <string name="username_already_exist">Username already exist</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>

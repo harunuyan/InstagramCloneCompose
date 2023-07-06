@@ -97,7 +97,13 @@ fun SignupScreen(
                 visualTransformation = PasswordVisualTransformation() // -> Hide password
             )
             Button(
-                onClick = {},
+                onClick = {
+                    viewModel.onSignup(
+                        usernameState.text,
+                        emailState.text,
+                        passState.text
+                    )
+                },
                 modifier = Modifier.padding(MEDIUM_PADDING)
             ) {
                 Text(text = stringResource(id = R.string.signup_button))
