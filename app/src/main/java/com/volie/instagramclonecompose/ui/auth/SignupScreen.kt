@@ -31,8 +31,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.R
 import com.volie.instagramclonecompose.main.CommonProgressSpinner
+import com.volie.instagramclonecompose.main.navigateTo
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_PADDING
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_PADDING_TOP
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_SIZE
@@ -112,7 +114,12 @@ fun SignupScreen(
             Text(
                 modifier = Modifier
                     .padding(MEDIUM_PADDING)
-                    .clickable { },
+                    .clickable {
+                        navigateTo(
+                            navController = navController,
+                            destination = DestinationScreen.Login
+                        )
+                    },
                 text = stringResource(id = R.string.already_user),
                 color = Color.Blue
             )

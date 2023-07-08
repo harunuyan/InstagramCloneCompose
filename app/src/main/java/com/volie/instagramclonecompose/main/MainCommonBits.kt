@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.ui.viewmodel.IgViewModel
 
 @Composable
@@ -41,8 +42,12 @@ fun CommonProgressSpinner() {
     }
 }
 
-@Preview
-@Composable
-private fun Preview() {
-    CommonProgressSpinner()
+fun navigateTo(
+    navController: NavController,
+    destination: DestinationScreen
+) {
+    navController.navigate(destination.route) {
+        popUpTo(destination.route)
+        launchSingleTop = true
+    }
 }
