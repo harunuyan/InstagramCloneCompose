@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.volie.instagramclonecompose.main.NotificationMessage
 import com.volie.instagramclonecompose.ui.auth.SignupScreen
 import com.volie.instagramclonecompose.ui.theme.InstagramCloneComposeTheme
 import com.volie.instagramclonecompose.ui.viewmodel.IgViewModel
@@ -37,6 +38,8 @@ sealed class DestinationScreen(val route: String) {
 fun InstagramApp() {
     val viewModel: IgViewModel = viewModel()
     val navController = rememberNavController()
+
+    NotificationMessage(viewModel = viewModel)
 
     NavHost(
         navController = navController,
