@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.volie.instagramclonecompose.R
+import com.volie.instagramclonecompose.main.CommonProgressSpinner
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_PADDING
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_PADDING_TOP
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_SIZE
@@ -115,6 +116,11 @@ fun SignupScreen(
                 text = stringResource(id = R.string.already_user),
                 color = Color.Blue
             )
+        }
+
+        val isLoading = viewModel.inProgress.value
+        if (isLoading) {
+            CommonProgressSpinner()
         }
     }
 }
