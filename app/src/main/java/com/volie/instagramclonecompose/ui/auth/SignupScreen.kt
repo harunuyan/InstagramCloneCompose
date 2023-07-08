@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -47,14 +48,15 @@ fun SignupScreen(
     navController: NavController,
     viewModel: IgViewModel
 ) {
+
+    val focus = LocalFocusManager.current
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .verticalScroll(
-                    rememberScrollState()
-                ),
+                .verticalScroll(state = rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -101,6 +103,7 @@ fun SignupScreen(
             )
             Button(
                 onClick = {
+                    focus.clearFocus(force = true)
                     viewModel.onSignup(
                         usernameState.text,
                         emailState.text,
