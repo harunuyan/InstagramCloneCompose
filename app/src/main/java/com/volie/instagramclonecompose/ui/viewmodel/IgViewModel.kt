@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.volie.instagramclonecompose.data.model.UserData
 import com.volie.instagramclonecompose.util.Constant.USERS
@@ -22,6 +23,15 @@ class IgViewModel @Inject constructor(
     val inProgress = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val popupNotification = mutableStateOf<Event<String>?>(null)
+
+    init {
+//        auth.signOut()
+        val currentUser = auth.currentUser
+        signedIn.value = currentUser != null
+        currentUser?.uid?.let { uid ->
+            getUserData(uid)
+        }
+    }
 
     fun onSignup(username: String, email: String, pass: String) {
         inProgress.value = true
@@ -90,7 +100,17 @@ class IgViewModel @Inject constructor(
     }
 
     private fun getUserData(uid: String) {
-
+        inProgress.value = true
+        db.collection(USERS).document(uid).get()
+            .addOnSuccessListener {
+                val user = it.toObject<UserData>()
+                userData.value = user
+                inProgress.value = false
+            }
+            .addOnFailureListener { exception ->
+                handleException(exception = exception, "Cannot retrieve user data")
+                inProgress.value = false
+            }
     }
 
     fun handleException(exception: Exception? = null, customMessage: String = "") {
