@@ -1,4 +1,4 @@
-package com.volie.instagramclonecompose.ui.auth
+package com.volie.instagramclonecompose.ui.screen.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.R
+import com.volie.instagramclonecompose.main.CheckSignedIn
 import com.volie.instagramclonecompose.main.CommonProgressSpinner
 import com.volie.instagramclonecompose.main.navigateTo
 import com.volie.instagramclonecompose.ui.theme.INSTAGRAM_LOGO_PADDING
@@ -48,6 +49,8 @@ fun SignupScreen(
     navController: NavController,
     viewModel: IgViewModel
 ) {
+
+    CheckSignedIn(navController = navController, viewModel = viewModel)
 
     val focus = LocalFocusManager.current
 

@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,3 +55,16 @@ fun navigateTo(
         launchSingleTop = true
     }
 }
+
+@Composable
+fun CheckSignedIn(navController: NavController, viewModel: IgViewModel) {
+    var alreadyLoggedIn by remember { mutableStateOf(false) }
+    val signedIn = viewModel.signedIn.value
+    if (signedIn && !alreadyLoggedIn) {
+        alreadyLoggedIn = true
+        navController.navigate(DestinationScreen.Feed.route) {
+            popUpTo(0)
+        }
+    }
+}
+
