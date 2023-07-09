@@ -25,7 +25,7 @@ class IgViewModel @Inject constructor(
     val popupNotification = mutableStateOf<Event<String>?>(null)
 
     init {
-//        auth.signOut()
+        auth.signOut()
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
         currentUser?.uid?.let { uid ->
@@ -61,6 +61,33 @@ class IgViewModel @Inject constructor(
                 }
             }
             .addOnFailureListener { }
+    }
+
+    fun onLogin(email: String, pass: String) {
+        if (email.isEmpty() or pass.isEmpty()) {
+            handleException(customMessage = "Please fill in all fields")
+            return
+        }
+        inProgress.value = true
+
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    signedIn.value = true
+                    inProgress.value = false
+                    auth.currentUser?.uid?.let { uid ->
+                        handleException(customMessage = "Login successfully")
+                        getUserData(uid = uid)
+                    }
+                } else {
+                    handleException(task.exception, "Login failed!")
+                    inProgress.value = false
+                }
+            }
+            .addOnFailureListener { exception ->
+                handleException(exception = exception, "Login failed!")
+                inProgress.value = false
+            }
     }
 
     private fun createOrUpdateProfile(
