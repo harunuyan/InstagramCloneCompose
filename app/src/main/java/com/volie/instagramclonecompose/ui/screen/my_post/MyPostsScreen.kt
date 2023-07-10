@@ -1,4 +1,4 @@
-package com.volie.instagramclonecompose.ui.screen.feed
+package com.volie.instagramclonecompose.ui.screen.my_post
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,13 +13,13 @@ import com.volie.instagramclonecompose.main.BottomNavigationMenu
 import com.volie.instagramclonecompose.ui.viewmodel.IgViewModel
 
 @Composable
-fun FeedScreen(navController: NavController, viewModel: IgViewModel) {
+fun MyPostsScreen(navController: NavController, viewModel: IgViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.weight(weight = 1f)) {
-            Text(text = stringResource(id = R.string.feed_screen))
+            Text(text = stringResource(id = R.string.my_post_screen))
         }
         BottomNavigationMenu(
-            selectedItem = BottomNavigationItem.FEED,
+            selectedItem = BottomNavigationItem.POSTS,
             navController = navController
         )
     }

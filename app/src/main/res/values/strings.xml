@@ -3,6 +3,9 @@
 
     <string name="ig_logo">Instagram Logo</string>
 
+    <string name="feed_screen">Feed Screen</string>
+    <string name="search_screen">Search Screen</string>
+    <string name="my_post_screen">MyPost Screen</string>
     <string name="signup">Signup</string>
     <string name="login">Login</string>
     <string name="signup_button">SIGN UP</string>
