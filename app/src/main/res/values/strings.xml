@@ -8,6 +8,8 @@
     <string name="my_post_screen">MyPost Screen</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="posts_list">Posts list</string>
+    <string name="user_icon">User Icon</string>
+    <string name="add_icon">Add Icon</string>
     <string name="signup">Signup</string>
     <string name="login">Login</string>
     <string name="signup_button">SIGN UP</string>

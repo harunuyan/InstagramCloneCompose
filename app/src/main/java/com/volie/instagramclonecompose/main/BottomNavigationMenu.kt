@@ -16,8 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.R
-import com.volie.instagramclonecompose.ui.theme.LARGEST_SIZE
 import com.volie.instagramclonecompose.ui.theme.LOW_PADDING
+import com.volie.instagramclonecompose.ui.theme.LOW_SIZE
 
 enum class BottomNavigationItem(val icon: Int, val navDestination: DestinationScreen) {
     FEED(R.drawable.ic_home, DestinationScreen.Feed),
@@ -40,7 +40,7 @@ fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavC
                 painter = painterResource(id = item.icon),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(LARGEST_SIZE)
+                    .size(LOW_SIZE)
                     .padding(LOW_PADDING)
                     .weight(1f)
                     .clickable {
