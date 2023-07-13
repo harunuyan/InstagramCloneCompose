@@ -28,10 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.R
 import com.volie.instagramclonecompose.main.BottomNavigationItem
 import com.volie.instagramclonecompose.main.BottomNavigationMenu
+import com.volie.instagramclonecompose.main.CommonProgressSpinner
 import com.volie.instagramclonecompose.main.UserImageCard
+import com.volie.instagramclonecompose.main.navigateTo
 import com.volie.instagramclonecompose.ui.theme.LARGE_PADDING
 import com.volie.instagramclonecompose.ui.theme.LARGE_SIZE
 import com.volie.instagramclonecompose.ui.theme.LOWEST_PADDING
@@ -93,7 +96,12 @@ fun MyPostsScreen(navController: NavController, viewModel: IgViewModel) {
                     disabledElevation = 0.dp
                 ),
                 shape = RoundedCornerShape(percent = 10),
-                onClick = {}
+                onClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = DestinationScreen.Profile
+                    )
+                }
             ) {
                 Text(
                     text = stringResource(id = R.string.edit_profile),
@@ -109,6 +117,9 @@ fun MyPostsScreen(navController: NavController, viewModel: IgViewModel) {
             selectedItem = BottomNavigationItem.POSTS,
             navController = navController
         )
+    }
+    if (isLoading) {
+        CommonProgressSpinner()
     }
 }
 

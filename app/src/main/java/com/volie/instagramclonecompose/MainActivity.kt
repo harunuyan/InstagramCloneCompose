@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.volie.instagramclonecompose.main.NotificationMessage
 import com.volie.instagramclonecompose.ui.screen.auth.LoginScreen
+import com.volie.instagramclonecompose.ui.screen.auth.ProfileScreen
 import com.volie.instagramclonecompose.ui.screen.auth.SignupScreen
 import com.volie.instagramclonecompose.ui.screen.feed.FeedScreen
 import com.volie.instagramclonecompose.ui.screen.my_post.MyPostsScreen
@@ -39,6 +40,7 @@ sealed class DestinationScreen(val route: String) {
     object Feed : DestinationScreen(route = "feed")
     object Search : DestinationScreen(route = "search")
     object MyPosts : DestinationScreen(route = "myposts")
+    object Profile : DestinationScreen(route = "profile")
 }
 
 @ExperimentalMaterial3Api
@@ -79,6 +81,12 @@ fun InstagramApp() {
         }
         composable(route = DestinationScreen.MyPosts.route) {
             MyPostsScreen(
+                navController = navController,
+                viewModel = viewModel
+            )
+        }
+        composable(route = DestinationScreen.Profile.route) {
+            ProfileScreen(
                 navController = navController,
                 viewModel = viewModel
             )
