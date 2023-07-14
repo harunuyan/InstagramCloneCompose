@@ -62,10 +62,10 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.45"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-firestore:24.6.1'
-    implementation 'com.google.firebase:firebase-auth-ktx:22.0.0'
+    implementation 'com.google.firebase:firebase-firestore:24.7.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:22.1.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.2.2'
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
 
     // Lifecycle ViewModel
