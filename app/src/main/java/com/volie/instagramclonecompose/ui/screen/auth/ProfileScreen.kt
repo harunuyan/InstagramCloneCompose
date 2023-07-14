@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.volie.instagramclonecompose.DestinationScreen
@@ -59,7 +60,17 @@ fun ProfileScreen(navController: NavController, viewModel: IgViewModel) {
             onNameChanged = { name = it },
             onUsernameChanged = { username = it },
             onBioChanged = { bio = it },
-            onSave = {},
+            onSave = {
+                viewModel.updateProfileData(
+                    name = name,
+                    username = username,
+                    bio = bio
+                )
+                navigateTo(
+                    navController = navController,
+                    destination = DestinationScreen.MyPosts
+                )
+            },
             onBack = {
                 navigateTo(
                     navController = navController,
