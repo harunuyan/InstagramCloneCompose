@@ -1,4 +1,4 @@
-package com.volie.instagramclonecompose.data.model
+package com.volie.instagramclonecompose.data.model.user
 
 data class UserData(
     var userId: String? = null,

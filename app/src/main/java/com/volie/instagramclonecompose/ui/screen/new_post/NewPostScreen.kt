@@ -1,5 +1,6 @@
 package com.volie.instagramclonecompose.ui.screen.new_post
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,8 +62,13 @@ fun NewPostScreen(navController: NavController, viewModel: IgViewModel, encodedU
                 text = stringResource(id = R.string.cancel)
             )
             Text(
-                modifier = Modifier.clickable { focusManager.clearFocus() }, // Call the VM
-                text = stringResource(id = R.string.post)
+                modifier = Modifier.clickable {
+                    focusManager.clearFocus()
+                    viewModel.onNewPost(
+                        uri = Uri.parse(imageUri),
+                        description = description,
+                    ) { navController.popBackStack() }
+                }, text = stringResource(id = R.string.post)
             )
         }
         CommonDivider()

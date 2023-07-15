@@ -7,7 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
-import com.volie.instagramclonecompose.data.model.UserData
+import com.volie.instagramclonecompose.data.model.post.PostData
+import com.volie.instagramclonecompose.data.model.user.UserData
+import com.volie.instagramclonecompose.util.Constant.POSTS
 import com.volie.instagramclonecompose.util.Constant.USERS
 import com.volie.instagramclonecompose.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,19 +52,17 @@ class IgViewModel @Inject constructor(
                     handleException(customMessage = "Username already exist!")
                     inProgress.value = false
                 } else {
-                    auth.createUserWithEmailAndPassword(email, pass)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                signedIn.value = true
-                                createOrUpdateProfile(username = username)
-                            } else {
-                                handleException(task.exception, customMessage = "Signup Failed")
-                            }
-                            inProgress.value = false
+                    auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            signedIn.value = true
+                            createOrUpdateProfile(username = username)
+                        } else {
+                            handleException(task.exception, customMessage = "Signup Failed")
                         }
+                        inProgress.value = false
+                    }
                 }
-            }
-            .addOnFailureListener { }
+            }.addOnFailureListener { }
     }
 
     fun onLogin(email: String, pass: String) {
@@ -72,24 +72,22 @@ class IgViewModel @Inject constructor(
         }
         inProgress.value = true
 
-        auth.signInWithEmailAndPassword(email, pass)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    signedIn.value = true
-                    inProgress.value = false
-                    auth.currentUser?.uid?.let { uid ->
+        auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                signedIn.value = true
+                inProgress.value = false
+                auth.currentUser?.uid?.let { uid ->
 //                        handleException(customMessage = "Login successfully")
-                        getUserData(uid = uid)
-                    }
-                } else {
-                    handleException(task.exception, "Login failed!")
-                    inProgress.value = false
+                    getUserData(uid = uid)
                 }
-            }
-            .addOnFailureListener { exception ->
-                handleException(exception = exception, "Login failed!")
+            } else {
+                handleException(task.exception, "Login failed!")
                 inProgress.value = false
             }
+        }.addOnFailureListener { exception ->
+            handleException(exception = exception, "Login failed!")
+            inProgress.value = false
+        }
     }
 
     private fun createOrUpdateProfile(
@@ -112,40 +110,35 @@ class IgViewModel @Inject constructor(
             inProgress.value = true
             db.collection(USERS).document(uid).get().addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    documentSnapshot.reference.update(userData.toMap())
-                        .addOnSuccessListener {
-                            this.userData.value = userData
-                            inProgress.value = false
-                        }
-                        .addOnFailureListener {
-                            handleException(it, "Cannot update user")
-                            inProgress.value = false
-                        }
+                    documentSnapshot.reference.update(userData.toMap()).addOnSuccessListener {
+                        this.userData.value = userData
+                        inProgress.value = false
+                    }.addOnFailureListener {
+                        handleException(it, "Cannot update user")
+                        inProgress.value = false
+                    }
                 } else {
                     db.collection(USERS).document(uid).set(userData)
                     getUserData(uid = uid)
                     inProgress.value = false
                 }
+            }.addOnFailureListener { exception ->
+                handleException(exception = exception, "Cannot create user")
+                inProgress.value = false
             }
-                .addOnFailureListener { exception ->
-                    handleException(exception = exception, "Cannot create user")
-                    inProgress.value = false
-                }
         }
     }
 
     private fun getUserData(uid: String) {
         inProgress.value = true
-        db.collection(USERS).document(uid).get()
-            .addOnSuccessListener {
-                val user = it.toObject<UserData>()
-                userData.value = user
-                inProgress.value = false
-            }
-            .addOnFailureListener { exception ->
-                handleException(exception = exception, "Cannot retrieve user data")
-                inProgress.value = false
-            }
+        db.collection(USERS).document(uid).get().addOnSuccessListener {
+            val user = it.toObject<UserData>()
+            userData.value = user
+            inProgress.value = false
+        }.addOnFailureListener { exception ->
+            handleException(exception = exception, "Cannot retrieve user data")
+            inProgress.value = false
+        }
     }
 
     fun handleException(exception: Exception? = null, customMessage: String = "") {
@@ -157,9 +150,7 @@ class IgViewModel @Inject constructor(
 
     fun updateProfileData(name: String, username: String, bio: String) {
         createOrUpdateProfile(
-            name = name,
-            username = username,
-            bio = bio
+            name = name, username = username, bio = bio
         )
     }
 
@@ -174,11 +165,10 @@ class IgViewModel @Inject constructor(
         uploadTask.addOnSuccessListener {
             val result = it.metadata?.reference?.downloadUrl
             result?.addOnSuccessListener(onSuccess)
+        }.addOnFailureListener { exception ->
+            handleException(exception = exception)
+            inProgress.value = false
         }
-            .addOnFailureListener { exception ->
-                handleException(exception = exception)
-                inProgress.value = false
-            }
     }
 
     fun uploadProfileImage(uri: Uri) {
@@ -192,5 +182,47 @@ class IgViewModel @Inject constructor(
         signedIn.value = false
         userData.value = null
         popupNotification.value = Event(content = "Logged out")
+    }
+
+    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+        uploadImage(uri = uri) {
+            onCreatePost(
+                imageUri = it, description = description, onPostSuccess = onPostSuccess
+            )
+        }
+    }
+
+    private fun onCreatePost(imageUri: Uri, description: String, onPostSuccess: () -> Unit) {
+
+        inProgress.value = true
+        val currentUid = auth.currentUser?.uid
+        val currentUsername = userData.value?.username
+        val currentUserImage = userData.value?.imageUrl
+
+        if (currentUid != null) {
+            val postUuid = UUID.randomUUID().toString()
+            val post = PostData(
+                postId = postUuid,
+                userId = currentUid,
+                username = currentUsername,
+                userImage = currentUserImage,
+                postImage = imageUri.toString(),
+                postDescription = description,
+                time = System.currentTimeMillis()
+            )
+
+            db.collection(POSTS).document(postUuid).set(post).addOnSuccessListener {
+                popupNotification.value = Event(content = "Post successfully created")
+                inProgress.value = false
+                onPostSuccess.invoke()
+            }.addOnFailureListener { exception ->
+                handleException(exception, "Unable to create post")
+                inProgress.value = false
+            }
+        } else {
+            handleException(customMessage = "Error username unavailable. Unable to create post")
+            onLogout()
+            inProgress.value = false
+        }
     }
 }
