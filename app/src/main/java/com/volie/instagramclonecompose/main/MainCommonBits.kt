@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -85,7 +87,7 @@ fun CheckSignedIn(navController: NavController, viewModel: IgViewModel) {
 
 @Composable
 fun CommonImage(
-    data: String,
+    data: String?,
     modifier: Modifier = Modifier.wrapContentSize(),
     contentScale: ContentScale = ContentScale.Crop
 ) {
@@ -123,4 +125,15 @@ fun UserImageCard(
             CommonImage(data = userImage)
         }
     }
+}
+
+@Composable
+fun CommonDivider() {
+    Divider(
+        modifier = Modifier
+            .alpha(alpha = 0.3f)
+            .padding(top = MEDIUM_PADDING, bottom = MEDIUM_PADDING),
+        color = Color.LightGray,
+        thickness = 1.dp
+    )
 }

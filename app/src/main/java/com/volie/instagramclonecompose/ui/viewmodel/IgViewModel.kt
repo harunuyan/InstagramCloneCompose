@@ -1,5 +1,6 @@
 package com.volie.instagramclonecompose.ui.viewmodel
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +11,7 @@ import com.volie.instagramclonecompose.data.model.UserData
 import com.volie.instagramclonecompose.util.Constant.USERS
 import com.volie.instagramclonecompose.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -159,5 +161,29 @@ class IgViewModel @Inject constructor(
             username = username,
             bio = bio
         )
+    }
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageRef.child("image/$uuid") // folder
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask.addOnSuccessListener {
+            val result = it.metadata?.reference?.downloadUrl
+            result?.addOnSuccessListener(onSuccess)
+        }
+            .addOnFailureListener { exception ->
+                handleException(exception = exception)
+                inProgress.value = false
+            }
+    }
+
+    fun uploadProfileImage(uri: Uri) {
+        uploadImage(uri = uri) {
+            createOrUpdateProfile(imageUrl = it.toString())
+        }
     }
 }

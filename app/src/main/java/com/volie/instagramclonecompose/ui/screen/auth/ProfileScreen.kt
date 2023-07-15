@@ -1,17 +1,23 @@
 package com.volie.instagramclonecompose.ui.screen.auth
 
-import androidx.compose.foundation.background
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,17 +29,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.volie.instagramclonecompose.DestinationScreen
 import com.volie.instagramclonecompose.R
+import com.volie.instagramclonecompose.main.CommonDivider
+import com.volie.instagramclonecompose.main.CommonImage
 import com.volie.instagramclonecompose.main.CommonProgressSpinner
 import com.volie.instagramclonecompose.main.navigateTo
-import com.volie.instagramclonecompose.ui.theme.LARGEST_SIZE
 import com.volie.instagramclonecompose.ui.theme.LARGE_PADDING
 import com.volie.instagramclonecompose.ui.theme.LOW_PADDING
 import com.volie.instagramclonecompose.ui.theme.MEDIUM_PADDING
@@ -97,6 +102,7 @@ fun ProfileContent(
     onLogout: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val imageUrl = viewModel.userData.value?.imageUrl
 
     Column(
         modifier = Modifier
@@ -121,14 +127,11 @@ fun ProfileContent(
         CommonDivider()
 
         // User image
-        Column(
-            modifier = Modifier
-                .height(height = LARGEST_SIZE)
-                .fillMaxWidth()
-                .background(Color.Gray)
-        ) {
+        ProfileImage(
+            imageUrl = imageUrl,
+            viewModel = viewModel
+        )
 
-        }
         CommonDivider()
 
         Row(
@@ -206,12 +209,38 @@ fun ProfileContent(
 }
 
 @Composable
-fun CommonDivider() {
-    Divider(
-        modifier = Modifier
-            .alpha(alpha = 0.3f)
-            .padding(top = MEDIUM_PADDING, bottom = MEDIUM_PADDING),
-        color = Color.LightGray,
-        thickness = 1.dp
-    )
+fun ProfileImage(imageUrl: String?, viewModel: IgViewModel) {
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            viewModel.uploadProfileImage(uri = uri)
+        }
+    }
+
+    Box(modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)) {
+        Column(
+            modifier = Modifier
+                .padding(MEDIUM_PADDING)
+                .fillMaxWidth()
+                .clickable { launcher.launch("image/*") },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Card(
+                modifier = Modifier
+                    .padding(MEDIUM_PADDING)
+                    .size(100.dp),
+                shape = CircleShape
+            ) {
+                CommonImage(data = imageUrl)
+            }
+            Text(text = stringResource(id = R.string.change_profile_picture))
+        }
+
+        val isLoading = viewModel.inProgress.value
+        if (isLoading) {
+            CommonProgressSpinner()
+        }
+    }
 }
