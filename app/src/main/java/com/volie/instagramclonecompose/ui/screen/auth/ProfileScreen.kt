@@ -82,7 +82,13 @@ fun ProfileScreen(navController: NavController, viewModel: IgViewModel) {
                     destination = DestinationScreen.MyPosts
                 )
             },
-            onLogout = {}
+            onLogout = {
+                viewModel.onLogout()
+                navigateTo(
+                    navController = navController,
+                    destination = DestinationScreen.Login
+                )
+            }
         )
     }
 }
