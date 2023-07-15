@@ -1,5 +1,8 @@
 package com.volie.instagramclonecompose.ui.screen.my_post
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,6 +47,15 @@ import com.volie.instagramclonecompose.ui.viewmodel.IgViewModel
 
 @Composable
 fun MyPostsScreen(navController: NavController, viewModel: IgViewModel) {
+    val newPostImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            val encoded = Uri.encode(it.toString())
+            val route = DestinationScreen.NewPost.createRoute(encoded)
+            navController.navigate(route = route)
+        }
+    }
 
     val userData = viewModel.userData.value
     val isLoading = viewModel.inProgress.value
@@ -53,7 +65,9 @@ fun MyPostsScreen(navController: NavController, viewModel: IgViewModel) {
             Row {
                 ProfileImage(
                     imageUrl = userData?.imageUrl,
-                    onClick = {}
+                    onClick = {
+                        newPostImageLauncher.launch("image/*")
+                    }
                 )
                 Text(
                     text = "15\nPost",

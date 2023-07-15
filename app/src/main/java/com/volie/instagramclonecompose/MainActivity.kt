@@ -16,6 +16,7 @@ import com.volie.instagramclonecompose.ui.screen.auth.ProfileScreen
 import com.volie.instagramclonecompose.ui.screen.auth.SignupScreen
 import com.volie.instagramclonecompose.ui.screen.feed.FeedScreen
 import com.volie.instagramclonecompose.ui.screen.my_post.MyPostsScreen
+import com.volie.instagramclonecompose.ui.screen.new_post.NewPostScreen
 import com.volie.instagramclonecompose.ui.screen.search.SearchScreen
 import com.volie.instagramclonecompose.ui.theme.InstagramCloneComposeTheme
 import com.volie.instagramclonecompose.ui.viewmodel.IgViewModel
@@ -41,6 +42,9 @@ sealed class DestinationScreen(val route: String) {
     object Search : DestinationScreen(route = "search")
     object MyPosts : DestinationScreen(route = "myposts")
     object Profile : DestinationScreen(route = "profile")
+    object NewPost : DestinationScreen(route = "newpost/{imageUri}") {
+        fun createRoute(uri: String) = "newpost/$uri"
+    }
 }
 
 @ExperimentalMaterial3Api
@@ -90,6 +94,16 @@ fun InstagramApp() {
                 navController = navController,
                 viewModel = viewModel
             )
+        }
+        composable(DestinationScreen.NewPost.route) { navBackStackEntry ->
+            val imageUri = navBackStackEntry.arguments?.getString("imageUri")
+            imageUri?.let {
+                NewPostScreen(
+                    navController = navController,
+                    viewModel = viewModel,
+                    encodedUri = it
+                )
+            }
         }
     }
 }
